@@ -58,8 +58,8 @@ function HomeContent() {
         <>
             <div className="container">
                 <h1>
-                    Mining The New York Times' Coverage <br /> of the Soviet
-                    Collapse
+                    Mining The New York Times&apos; Coverage <br /> of the
+                    Soviet Collapse
                 </h1>
 
                 <ArticleFilters

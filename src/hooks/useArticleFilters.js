@@ -11,10 +11,10 @@ export function useArticleFilters() {
     const { topicIndex, topicThreshold } = useFilters();
 
     useEffect(() => {
-        // Reset pagination when filters change
         setSkip(0);
         setSampleArticles([]);
         fetchArticles();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [topicIndex, topicThreshold]);
 
     const fetchArticles = async () => {
