@@ -1,0 +1,56 @@
+.wrapper {
+    margin-bottom: 20px;
+    padding: 16px;
+    background-color: var(--light-gray);
+    border-radius: 8px;
+}
+
+.filtersBlock {
+    display: flex;
+    gap: 15px;
+    align-items: flex-end;
+}
+
+.label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: var(--light-text);
+}
+
+.select {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    width: 320px;
+}
+
+.input {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    width: 120px;
+}
+
+.input:disabled {
+    cursor: not-allowed;
+}
+
+.button {
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: white;
+    cursor: pointer;
+}
+
+.button:disabled {
+    background-color: transparent;
+    cursor: not-allowed;
+}
+
+.statsBlock {
+    font-size: 14px;
+    color: var(--light-text);
+    margin-top: 16px;
+}
