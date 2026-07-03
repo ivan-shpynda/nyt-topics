@@ -7,7 +7,9 @@ export default function Nav() {
     return (
         <div className={styles.nav}>
             <Link to="/" className={styles.brand}>
-                <span className={styles.brandTitle}>NYT Topics</span>
+                <span className={styles.brandTitle}>
+                    NYT & the Soviet Collapse
+                </span>
                 <span className={styles.brandYear}>1985&ndash;1991</span>
             </Link>
             <div className={styles.links}>

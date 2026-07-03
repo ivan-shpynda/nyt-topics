@@ -43,22 +43,22 @@ export default function About() {
 
             <p className={styles.bodyParagraph}>
                 <span className={styles.dropcap}>T</span>
-                his project grew out of a master&rsquo;s thesis defended at the
-                Ukrainian Catholic University and the University of Nottingham
-                in June 2026. The goal was simple to state and difficult to
-                execute: to understand how The New York Times constructed its
-                image of the Soviet collapse. No single person can read and
-                systematize the entire body of NYT material on the USSR over
-                such a period closely enough to see overall patterns rather than
-                isolated stories. So data collection proceeded in two stages.
-                Using the official NYT Article Search API, metadata was
-                retrieved for every article containing the word
-                &ldquo;soviet&rdquo; published between March 1985 and December
-                1991 &mdash; then filtered against key terms from
-                &ldquo;ussr&rdquo; and &ldquo;moscow&rdquo; to the names of
-                every constituent republic. Custom Node.js scripts then pulled
-                the full texts from the newspaper&rsquo;s digital archive. The
-                result was a corpus of 18,218 articles.
+                his project grew out of a joint master&rsquo;s thesis at the
+                Ukrainian Catholic University and the University of Nottingham.
+                The goal was simple to state and difficult to execute: to
+                understand how The New York Times constructed its image of the
+                Soviet collapse. No single person can read and systematize the
+                entire body of NYT material on the USSR over such a period
+                closely enough to see overall patterns rather than isolated
+                stories. So data collection proceeded in two stages. Using the
+                official NYT Article Search API, metadata was retrieved for
+                every article containing the word &ldquo;soviet&rdquo; published
+                between March 1985 and December 1991 &mdash; then filtered
+                against key terms from &ldquo;ussr&rdquo; and
+                &ldquo;moscow&rdquo; to the names of every constituent republic.
+                Custom Node.js scripts then pulled the full texts from the
+                newspaper&rsquo;s digital archive. The result was a corpus of
+                18,218 articles.
             </p>
 
             <p className={styles.bodyParagraph}>

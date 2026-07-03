@@ -21,10 +21,8 @@ function ExplorerContent() {
 
     return (
         <div className={styles.container}>
-            <div className={styles.eyebrow}>Topic Explorer</div>
-            <h1 className={styles.heading}>
-                Coverage of the Soviet Collapse, by Topic
-            </h1>
+            <div className={styles.eyebrow}>Thematic map visualization</div>
+            <h1 className={styles.heading}>Topic Explorer</h1>
             <p className={styles.meta}>
                 March 1985 &ndash; December 1991 &middot; 18,000+ articles
             </p>
