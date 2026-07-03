@@ -1,0 +1,27 @@
+.wrapper {
+    margin-bottom: 48px;
+}
+
+.label {
+    font-family: var(--font-ibm-plex-mono), monospace;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: 16px;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tag {
+    font-family: var(--font-ibm-plex-sans), sans-serif;
+    font-size: 14px;
+    color: var(--color-text-body);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    padding: 7px 14px;
+}

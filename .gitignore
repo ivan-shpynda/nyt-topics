@@ -13,12 +13,9 @@
 # testing
 /coverage
 
-# next.js
-/.next/
-/out/
-
 # production
 /build
+/dist
 
 # misc
 .DS_Store
@@ -38,7 +35,11 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
+
+# local working copy of the sqlite database (source for scripts/migrate.js);
+# the shipped copy the app actually fetches lives at /public/data/articles.db
+# and is intentionally tracked, not ignored.
+/data/*.db*
 
 # variables
 .env.local

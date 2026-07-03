@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useFilters } from "@/context/FilterContext";
+import { getArticleCounts, getArticleExamples } from "@/lib/sqlite";
 
 export function useArticleFilters() {
     const [articles, setArticles] = useState([]);
@@ -21,7 +22,7 @@ export function useArticleFilters() {
         const adaptedThreshold = topicThreshold
             ? parseFloat(topicThreshold) / 100
             : "";
-        // Don't execute request if topic is selected but no threshold is specified
+        // Don't query if a topic is selected but no threshold is specified yet
         if (topicIndex !== "" && adaptedThreshold === "") {
             return;
         }
@@ -29,28 +30,10 @@ export function useArticleFilters() {
         try {
             setLoading(true);
 
-            let url = "/api/articles";
-            const params = new URLSearchParams();
-
-            if (topicIndex !== "" && adaptedThreshold !== "") {
-                params.append("topicIndex", topicIndex);
-                params.append("topicThreshold", adaptedThreshold);
-            }
-
-            if (params.toString()) {
-                url += `?${params.toString()}`;
-            }
-
-            const response = await fetch(url);
-            const data = await response.json();
-
-            if (data.success) {
-                setArticles(data.data);
-                // Fetch article examples after chart data is loaded
-                await fetchArticleExamples(params, 0);
-            } else {
-                console.error("API returned error:", data.error);
-            }
+            const data = await getArticleCounts(topicIndex, adaptedThreshold);
+            setArticles(data);
+            // Fetch article examples after chart data is loaded
+            await fetchArticleExamples(topicIndex, adaptedThreshold, 0);
         } catch (error) {
             console.error("Error loading articles:", error);
         } finally {
@@ -59,41 +42,33 @@ export function useArticleFilters() {
     };
 
     const fetchArticleExamples = async (
-        params,
+        index,
+        threshold,
         skipValue = skip,
-        append = false
+        append = false,
     ) => {
         try {
             if (append) {
                 setLoadingMore(true);
             }
 
-            let url = "/api/articles/examples";
-            const queryParams = new URLSearchParams(params);
-            queryParams.append("skip", skipValue);
-            queryParams.append("limit", "10");
+            const data = await getArticleExamples({
+                topicIndex: index,
+                topicThreshold: threshold,
+                skip: skipValue,
+                limit: 10,
+            });
 
-            if (queryParams.toString()) {
-                url += `?${queryParams.toString()}`;
-            }
-
-            const response = await fetch(url);
-            const data = await response.json();
-
-            if (data.success) {
-                if (append) {
-                    setSampleArticles((prev) => [
-                        ...prev,
-                        ...(data.articles || []),
-                    ]);
-                } else {
-                    setSampleArticles(data.articles || []);
-                }
-                setHasMore(data.hasMore || false);
-                setSkip(skipValue + 10);
+            if (append) {
+                setSampleArticles((prev) => [
+                    ...prev,
+                    ...(data.articles || []),
+                ]);
             } else {
-                console.error("API returned error:", data.error);
+                setSampleArticles(data.articles || []);
             }
+            setHasMore(data.hasMore || false);
+            setSkip(skipValue + 10);
         } catch (error) {
             console.error("Error loading article examples:", error);
         } finally {
@@ -107,12 +82,7 @@ export function useArticleFilters() {
         const adaptedThreshold = topicThreshold
             ? parseFloat(topicThreshold) / 100
             : "";
-        const params = new URLSearchParams();
-        if (topicIndex !== "" && adaptedThreshold !== "") {
-            params.append("topicIndex", topicIndex);
-            params.append("topicThreshold", adaptedThreshold);
-        }
-        await fetchArticleExamples(params, skip, true);
+        await fetchArticleExamples(topicIndex, adaptedThreshold, skip, true);
     };
 
     return {
