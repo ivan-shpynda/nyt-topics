@@ -47,6 +47,7 @@ export default function ArticleFilters({ articles }) {
                         onMouseUp={(e) => setTopicThreshold(e.target.value)}
                         onTouchEnd={(e) => setTopicThreshold(e.target.value)}
                         className={styles.range}
+                        style={{ "--progress": `${localThreshold}%` }}
                     />
                 </div>
             )}

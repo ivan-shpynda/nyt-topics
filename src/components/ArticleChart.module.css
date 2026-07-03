@@ -28,10 +28,9 @@
     margin-bottom: 20px;
 }
 
-.svg {
+.chartWrapper {
+    position: relative;
     width: 100%;
-    height: auto;
-    display: block;
-    overflow: visible;
+    aspect-ratio: 1200 / 420;
     cursor: crosshair;
 }

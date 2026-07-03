@@ -45,7 +45,58 @@
 
 .range {
     width: 100%;
-    accent-color: var(--color-accent);
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+    background: linear-gradient(
+        to right,
+        var(--color-accent) var(--progress, 50%),
+        var(--color-border-mid) var(--progress, 50%)
+    );
+}
+
+.range::-webkit-slider-runnable-track {
+    height: 6px;
+    border-radius: 3px;
+    background: transparent;
+}
+
+.range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    border: 2px solid var(--color-surface);
+    box-shadow: 0 0 0 1px var(--color-border-mid);
+    margin-top: -6px;
+    cursor: pointer;
+}
+
+.range::-moz-range-track {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--color-border-mid);
+}
+
+.range::-moz-range-progress {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--color-accent);
+}
+
+.range::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    border: 2px solid var(--color-surface);
+    box-shadow: 0 0 0 1px var(--color-border-mid);
+    cursor: pointer;
 }
 
 .resetBtn {
@@ -62,8 +113,12 @@
 .count {
     display: flex;
     flex-direction: column;
+    align-items: flex-end;
     gap: 4px;
     margin-left: auto;
+    width: 140px;
+    flex-shrink: 0;
+    text-align: right;
 }
 
 .countNumber {
