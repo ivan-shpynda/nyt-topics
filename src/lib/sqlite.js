@@ -35,11 +35,16 @@ function runQuery(db, sql, params = []) {
 }
 
 // Same validation as the old /api/articles route: topicIndex must be an integer 0-13
-function resolveFilter(topicIndex, topicThreshold) {
+function resolveTopicIndex(topicIndex) {
     const index = parseInt(topicIndex, 10);
+    return !isNaN(index) && index >= 0 && index <= 13 ? index : null;
+}
+
+function resolveFilter(topicIndex, topicThreshold) {
+    const index = resolveTopicIndex(topicIndex);
     const threshold = parseFloat(topicThreshold);
 
-    if (!isNaN(index) && index >= 0 && index <= 13 && !isNaN(threshold)) {
+    if (index !== null && !isNaN(threshold)) {
         return { index, threshold };
     }
     return null;
@@ -69,6 +74,29 @@ export async function getArticleCounts(topicIndex, topicThreshold) {
 
     return rows.map((r) => ({
         _id: { year: r.year, month: r.month },
+        count: r.count,
+    }));
+}
+
+export async function getTopicProportions(topicIndex) {
+    const db = await loadDb();
+    const index = resolveTopicIndex(topicIndex);
+
+    if (index === null) {
+        return [];
+    }
+
+    const rows = runQuery(
+        db,
+        `SELECT year, month, AVG(topic_${index}) as proportion, COUNT(*) as count
+         FROM articles
+         GROUP BY year, month
+         ORDER BY year, month`,
+    );
+
+    return rows.map((r) => ({
+        _id: { year: r.year, month: r.month },
+        proportion: r.proportion,
         count: r.count,
     }));
 }

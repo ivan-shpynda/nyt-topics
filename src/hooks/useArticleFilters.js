@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import { useFilters } from "@/context/FilterContext";
-import { getArticleCounts, getArticleExamples } from "@/lib/sqlite";
+import {
+    getArticleCounts,
+    getTopicProportions,
+    getArticleExamples,
+} from "@/lib/sqlite";
 
 export function useArticleFilters() {
     const [articles, setArticles] = useState([]);
@@ -9,31 +13,38 @@ export function useArticleFilters() {
     const [loadingMore, setLoadingMore] = useState(false);
     const [hasMore, setHasMore] = useState(false);
     const [skip, setSkip] = useState(0);
-    const { topicIndex, topicThreshold } = useFilters();
+    const { topicIndex, topicThreshold, chartMode } = useFilters();
 
     useEffect(() => {
         setSkip(0);
         setSampleArticles([]);
         fetchArticles();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [topicIndex, topicThreshold]);
+    }, [topicIndex, topicThreshold, chartMode]);
 
     const fetchArticles = async () => {
+        const isProportionMode = chartMode === "proportion" && topicIndex !== "";
         const adaptedThreshold = topicThreshold
             ? parseFloat(topicThreshold) / 100
             : "";
         // Don't query if a topic is selected but no threshold is specified yet
-        if (topicIndex !== "" && adaptedThreshold === "") {
+        // (threshold isn't used in proportion mode, so it doesn't gate that case)
+        if (!isProportionMode && topicIndex !== "" && adaptedThreshold === "") {
             return;
         }
 
         try {
             setLoading(true);
 
-            const data = await getArticleCounts(topicIndex, adaptedThreshold);
+            const data = isProportionMode
+                ? await getTopicProportions(topicIndex)
+                : await getArticleCounts(topicIndex, adaptedThreshold);
             setArticles(data);
-            // Fetch article examples after chart data is loaded
-            await fetchArticleExamples(topicIndex, adaptedThreshold, 0);
+            // Fetch article examples after chart data is loaded. In proportion
+            // mode there's no user threshold, so pass 0 to surface the
+            // articles most representative of the topic (ordered by weight).
+            const examplesThreshold = isProportionMode ? 0 : adaptedThreshold;
+            await fetchArticleExamples(topicIndex, examplesThreshold, 0);
         } catch (error) {
             console.error("Error loading articles:", error);
         } finally {
@@ -79,9 +90,12 @@ export function useArticleFilters() {
     };
 
     const loadMoreArticles = async () => {
-        const adaptedThreshold = topicThreshold
-            ? parseFloat(topicThreshold) / 100
-            : "";
+        const isProportionMode = chartMode === "proportion" && topicIndex !== "";
+        const adaptedThreshold = isProportionMode
+            ? 0
+            : topicThreshold
+              ? parseFloat(topicThreshold) / 100
+              : "";
         await fetchArticleExamples(topicIndex, adaptedThreshold, skip, true);
     };
 

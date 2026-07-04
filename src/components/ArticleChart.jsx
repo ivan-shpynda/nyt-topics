@@ -26,9 +26,10 @@ const ACCENT = "#5B8FD9";
 const QUARTERLY = ["Mar", "Jun", "Sep", "Dec"];
 const FONT_MONO = "IBM Plex Mono, monospace";
 
-function computeMaxVal(data) {
+function computeMaxVal(data, mode) {
     const rawMax = Math.max(...data, 1);
-    return Math.ceil((rawMax * 1.15) / 5) * 5 || 5;
+    const rounded = Math.ceil((rawMax * 1.15) / 5) * 5 || 5;
+    return mode === "proportion" ? Math.min(rounded, 100) : rounded;
 }
 
 // Chart.js has no built-in crosshair; draw the dashed vertical guide
@@ -55,8 +56,14 @@ const crosshairPlugin = {
     },
 };
 
-export default function ArticleChart({ labels, data, loading }) {
-    const maxVal = useMemo(() => computeMaxVal(data), [data]);
+export default function ArticleChart({
+    labels,
+    data,
+    loading,
+    mode = "count",
+    granularity = "month",
+}) {
+    const maxVal = useMemo(() => computeMaxVal(data, mode), [data, mode]);
 
     const chartData = useMemo(
         () => ({
@@ -101,7 +108,10 @@ export default function ArticleChart({ labels, data, loading }) {
                     caretSize: 0,
                     callbacks: {
                         title: (items) => items[0].label,
-                        label: (item) => `${item.parsed.y.toLocaleString()} articles`,
+                        label: (item) =>
+                            mode === "proportion"
+                                ? `${item.parsed.y.toFixed(1)}%`
+                                : `${item.parsed.y.toLocaleString()} articles`,
                     },
                 },
             },
@@ -111,12 +121,13 @@ export default function ArticleChart({ labels, data, loading }) {
                     border: { display: false },
                     ticks: {
                         autoSkip: false,
-                        maxRotation: 40,
-                        minRotation: 40,
+                        maxRotation: granularity === "year" ? 0 : 40,
+                        minRotation: granularity === "year" ? 0 : 40,
                         color: "#6B7382",
                         font: { family: FONT_MONO, size: 11 },
                         callback(value, index) {
                             const label = labels[index];
+                            if (granularity === "year") return label;
                             return QUARTERLY.some((m) => label.startsWith(m)) ? label : "";
                         },
                     },
@@ -130,12 +141,15 @@ export default function ArticleChart({ labels, data, loading }) {
                         stepSize: maxVal / 6,
                         color: "#6B7382",
                         font: { family: FONT_MONO, size: 12 },
-                        callback: (value) => Math.round(value),
+                        callback: (value) =>
+                            mode === "proportion"
+                                ? `${Math.round(value)}%`
+                                : Math.round(value),
                     },
                 },
             },
         }),
-        [labels, maxVal],
+        [labels, maxVal, mode, granularity],
     );
 
     if (loading) {

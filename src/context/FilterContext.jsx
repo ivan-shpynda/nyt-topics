@@ -5,19 +5,17 @@ const FilterContext = createContext();
 export function FilterProvider({ children }) {
     const [topicIndex, setTopicIndex] = useState("");
     const [topicThreshold, setTopicThreshold] = useState("");
+    const [chartMode, setChartMode] = useState("count");
+    const [granularity, setGranularity] = useState("month");
 
     const handleTopicChange = (index) => {
         setTopicIndex(index);
         if (index === "") {
             setTopicThreshold("");
+            setChartMode("count");
         } else if (topicIndex === "") {
             setTopicThreshold("50");
         }
-    };
-
-    const resetFilters = () => {
-        setTopicIndex("");
-        setTopicThreshold("");
     };
 
     return (
@@ -27,7 +25,10 @@ export function FilterProvider({ children }) {
                 setTopicIndex: handleTopicChange,
                 topicThreshold,
                 setTopicThreshold,
-                resetFilters,
+                chartMode,
+                setChartMode,
+                granularity,
+                setGranularity,
             }}
         >
             {children}

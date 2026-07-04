@@ -4,9 +4,19 @@ import { useFilters } from "@/context/FilterContext";
 import styles from "./ArticleFilters.module.css";
 
 export default function ArticleFilters({ articles }) {
-    const { topicIndex, setTopicIndex, topicThreshold, setTopicThreshold, resetFilters } =
-        useFilters();
-    const [localThreshold, setLocalThreshold] = useState(topicThreshold || "50");
+    const {
+        topicIndex,
+        setTopicIndex,
+        topicThreshold,
+        setTopicThreshold,
+        chartMode,
+        setChartMode,
+        granularity,
+        setGranularity,
+    } = useFilters();
+    const [localThreshold, setLocalThreshold] = useState(
+        topicThreshold || "50",
+    );
 
     useEffect(() => {
         setLocalThreshold(topicThreshold || "50");
@@ -32,7 +42,49 @@ export default function ArticleFilters({ articles }) {
                 </select>
             </div>
 
+            <div className={`${styles.modeGroup} ${styles.granularityGroup}`}>
+                <label className={styles.label}>Granularity</label>
+                <div className={styles.modeToggle}>
+                    <button
+                        type="button"
+                        className={`${styles.modeBtn} ${granularity === "month" ? styles.modeBtnActive : ""}`}
+                        onClick={() => setGranularity("month")}
+                    >
+                        Monthly
+                    </button>
+                    <button
+                        type="button"
+                        className={`${styles.modeBtn} ${granularity === "year" ? styles.modeBtnActive : ""}`}
+                        onClick={() => setGranularity("year")}
+                    >
+                        Yearly
+                    </button>
+                </div>
+            </div>
+
             {topicIndex !== "" && (
+                <div className={`${styles.modeGroup} ${styles.viewGroup}`}>
+                    <label className={styles.label}>View</label>
+                    <div className={styles.modeToggle}>
+                        <button
+                            type="button"
+                            className={`${styles.modeBtn} ${chartMode === "count" ? styles.modeBtnActive : ""}`}
+                            onClick={() => setChartMode("count")}
+                        >
+                            Article Count
+                        </button>
+                        <button
+                            type="button"
+                            className={`${styles.modeBtn} ${chartMode === "proportion" ? styles.modeBtnActive : ""}`}
+                            onClick={() => setChartMode("proportion")}
+                        >
+                            Topic Proportion
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {topicIndex !== "" && chartMode === "count" && (
                 <div className={styles.thresholdGroup}>
                     <label className={styles.label}>
                         Threshold &mdash; {localThreshold}%
@@ -51,10 +103,6 @@ export default function ArticleFilters({ articles }) {
                     />
                 </div>
             )}
-
-            <div onClick={resetFilters} className={styles.resetBtn}>
-                Reset
-            </div>
 
             <div className={styles.count}>
                 <div className={styles.countNumber}>

@@ -1,5 +1,5 @@
 import { useArticleFilters } from "@/hooks/useArticleFilters";
-import { processArticleData } from "@/helpers/utils";
+import { processArticleData, processTopicProportionData } from "@/helpers/utils";
 import { FilterProvider, useFilters } from "@/context/FilterContext";
 import ArticleFilters from "@/components/ArticleFilters";
 import ArticleChart from "@/components/ArticleChart";
@@ -16,8 +16,11 @@ function ExplorerContent() {
         hasMore,
         loadMoreArticles,
     } = useArticleFilters();
-    const { topicIndex } = useFilters();
-    const { labels, data } = processArticleData(articles);
+    const { topicIndex, chartMode, granularity } = useFilters();
+    const { labels, data } =
+        chartMode === "proportion" && topicIndex !== ""
+            ? processTopicProportionData(articles, granularity)
+            : processArticleData(articles, granularity);
 
     return (
         <div className={styles.container}>
@@ -28,7 +31,13 @@ function ExplorerContent() {
             </p>
 
             <ArticleFilters articles={articles} />
-            <ArticleChart labels={labels} data={data} loading={loading} />
+            <ArticleChart
+                labels={labels}
+                data={data}
+                loading={loading}
+                mode={chartMode}
+                granularity={granularity}
+            />
             <KeyWords topicIndex={topicIndex} />
             <ArticleList
                 articles={sampleArticles}
