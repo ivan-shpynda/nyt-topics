@@ -128,7 +128,9 @@ export default function ArticleChart({
                         callback(value, index) {
                             const label = labels[index];
                             if (granularity === "year") return label;
-                            return QUARTERLY.some((m) => label.startsWith(m)) ? label : "";
+                            return QUARTERLY.some((m) => label.startsWith(m))
+                                ? label
+                                : "";
                         },
                     },
                 },
@@ -157,9 +159,15 @@ export default function ArticleChart({
             <div className={styles.dateLabel}>
                 March 1985 &ndash; December 1991
             </div>
-            {loading && <div className={styles.loadingText}>Loading chart…</div>}
+            {loading && (
+                <div className={styles.loadingText}>Loading chart…</div>
+            )}
             <div className={styles.chartWrapper}>
-                <Line data={chartData} options={options} plugins={[crosshairPlugin]} />
+                <Line
+                    data={chartData}
+                    options={options}
+                    plugins={[crosshairPlugin]}
+                />
             </div>
         </div>
     );
