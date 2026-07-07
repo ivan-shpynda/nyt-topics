@@ -22,6 +22,16 @@ export default function ArticleFilters({ articles }) {
         setLocalThreshold(topicThreshold || "50");
     }, [topicThreshold]);
 
+    useEffect(() => {
+        const mq = window.matchMedia("(max-width: 900px)");
+        const handler = (e) => {
+            if (e.matches) setGranularity("year");
+        };
+        if (mq.matches) setGranularity("year");
+        mq.addEventListener("change", handler);
+        return () => mq.removeEventListener("change", handler);
+    }, [setGranularity]);
+
     const totalArticles = articles.reduce((sum, item) => sum + item.count, 0);
 
     return (
@@ -84,25 +94,25 @@ export default function ArticleFilters({ articles }) {
                 </div>
             )}
 
-            {topicIndex !== "" && chartMode === "count" && (
-                <div className={styles.thresholdGroup}>
-                    <label className={styles.label}>
-                        Threshold &mdash; {localThreshold}%
-                    </label>
-                    <input
-                        type="range"
-                        min="0"
-                        max="100"
-                        step="1"
-                        value={localThreshold}
-                        onChange={(e) => setLocalThreshold(e.target.value)}
-                        onMouseUp={(e) => setTopicThreshold(e.target.value)}
-                        onTouchEnd={(e) => setTopicThreshold(e.target.value)}
-                        className={styles.range}
-                        style={{ "--progress": `${localThreshold}%` }}
-                    />
-                </div>
-            )}
+            <div
+                className={`${styles.thresholdGroup} ${topicIndex !== "" && chartMode === "count" ? "" : styles.hidden}`}
+            >
+                <label className={styles.label}>
+                    Threshold &mdash; {localThreshold}%
+                </label>
+                <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    step="1"
+                    value={localThreshold}
+                    onChange={(e) => setLocalThreshold(e.target.value)}
+                    onMouseUp={(e) => setTopicThreshold(e.target.value)}
+                    onTouchEnd={(e) => setTopicThreshold(e.target.value)}
+                    className={styles.range}
+                    style={{ "--progress": `${localThreshold}%` }}
+                />
+            </div>
 
             <div className={styles.count}>
                 <div className={styles.countNumber}>

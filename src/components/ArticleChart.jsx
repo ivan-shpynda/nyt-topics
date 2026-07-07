@@ -152,19 +152,12 @@ export default function ArticleChart({
         [labels, maxVal, mode, granularity],
     );
 
-    if (loading) {
-        return (
-            <div className={`${styles.card} ${styles.loadingCard}`}>
-                <div className={styles.loadingText}>Loading chart…</div>
-            </div>
-        );
-    }
-
     return (
         <div className={styles.card}>
             <div className={styles.dateLabel}>
                 March 1985 &ndash; December 1991
             </div>
+            {loading && <div className={styles.loadingText}>Loading chart…</div>}
             <div className={styles.chartWrapper}>
                 <Line data={chartData} options={options} plugins={[crosshairPlugin]} />
             </div>

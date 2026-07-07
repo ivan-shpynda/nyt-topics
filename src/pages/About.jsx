@@ -4,19 +4,19 @@ import styles from "./About.module.css";
 const GRID_ITEMS = [
     {
         label: "The Corpus",
-        text: "18,218 New York Times articles published between March 1985 and December 1991 — collected via the official NYT Article Search API, filtered against key geographic and political terms, and assembled into a representative sample of Soviet-themed coverage across seven years.",
+        text: "18,218 New York Times articles published between March 1985 and December 1991. Metadata — headlines, dates, sections, and keywords — was retrieved via the official NYT Article Search API and filtered against key geographic and political terms. Full article texts were then collected separately using custom Node.js scripts powered by Puppeteer, which scraped the newspaper's digital archive page by page. The result is a representative sample of Soviet-themed coverage spanning seven years.",
     },
     {
         label: "The Method",
-        text: "Latent Dirichlet Allocation (LDA), implemented with MALLET, applied to the full corpus after standard preprocessing: stopword removal, lemmatization, and frequency filtering. A 14-topic model. A topic was considered dominant for a given article when it accounted for more than half of that article's thematic weight.",
+        text: "Latent Dirichlet Allocation (LDA), implemented with MALLET, was applied to the full corpus after standard preprocessing — stopword removal, lemmatization, and frequency filtering. After a series of experiments, a 14-topic model was selected. For each article, the algorithm produced a probability distribution across all topics; a topic was considered dominant when it accounted for more than half of that article's thematic weight.",
     },
     {
-        label: "Economic Coverage",
-        text: "Coverage of the Soviet economy proved structurally thin — centered on figures, Western aid, and official reform programs rather than on the everyday experience of shortages and hardship. The NYT wrote about the economy mainly when it became a matter of diplomacy, not of people's lived experience.",
+        label: "Database",
+        text: "MALLET produces topic distributions as raw output files. To make the results navigable, a SQLite database was assembled from two sources: the article metadata retrieved via the NYT Article Search API — headline, date, section, keywords, abstract, and URL — and the per-article topic weights output by the LDA model. This application queries that database directly, allowing the full corpus to be filtered, sorted, and charted by topic, time, and section.",
     },
     {
-        label: "National Movements",
-        text: "The national movements topic showed the most dramatic trajectory of any cluster, climbing almost continuously across the entire period and eventually overtaking the diplomatic theme by 1991, peaking during the August coup. Baltic coverage gained weight faster and more consistently than Caucasian or Central Asian stories.",
+        label: "Visualization",
+        text: "The application is built as a single-page application using React and Vite. Topic trends over time are rendered as line charts via Chart.js, chosen for its flexibility in displaying multi-series temporal data across the seven-year span of the corpus. Each chart plots monthly or yearly article counts per topic, making long-term shifts and sudden spikes — like the surge in national movements coverage during 1991 — immediately legible.",
     },
 ];
 
@@ -50,70 +50,38 @@ export default function About() {
                 Soviet collapse. No single person can read and systematize the
                 entire body of NYT material on the USSR over such a period
                 closely enough to see overall patterns rather than isolated
-                stories. So data collection proceeded in two stages. Using the
+                stories &mdash; and that is precisely why the project turned to
+                <strong> LDA (Latent Dirichlet Allocation)</strong> topic
+                modeling as its primary analytical tool. But before any modeling
+                could begin, the corpus itself had to be assembled. Using the
                 official NYT Article Search API, metadata was retrieved for
                 every article containing the word &ldquo;soviet&rdquo; published
                 between March 1985 and December 1991 &mdash; then filtered
                 against key terms from &ldquo;ussr&rdquo; and
                 &ldquo;moscow&rdquo; to the names of every constituent republic.
-                Custom Node.js scripts then pulled the full texts from the
-                newspaper&rsquo;s digital archive. The result was a corpus of
-                18,218 articles.
+                Full article texts were then collected separately using custom
+                Node.js scripts powered by Puppeteer, which scraped the
+                newspaper&rsquo;s digital archive page by page. The result was a
+                corpus of 18,218 articles.
             </p>
 
             <p className={styles.bodyParagraph}>
-                To uncover hidden thematic structures within such a large volume
-                of text, the project applied topic modeling using{" "}
-                <strong>LDA (Latent Dirichlet Allocation)</strong> &mdash; a
-                statistical approach that treats each document as a mixture of
-                topics and each topic as a probability distribution over words,
-                implemented with MALLET. After preprocessing and a series of
-                experiments, a 14-topic model was settled on. For each article,
-                the algorithm calculated how strongly it belonged to each topic;
-                a topic was considered &ldquo;dominant&rdquo; when it accounted
-                for more than half of that article&rsquo;s thematic weight.
-                LDA&rsquo;s limits are worth naming: it ignores word order and
-                syntax, and the number of topics is chosen by the researcher.
-                The results aren&rsquo;t a final verdict &mdash; they&rsquo;re a
-                map that requires further interpretation and close reading,
-                which is exactly what the rest of the thesis was devoted to.
-            </p>
-
-            <p className={styles.bodyParagraph}>
-                The fourteen topics that emerged grouped into several thematic
-                clusters. The most dominant is diplomatic and strategic:
-                summits, nuclear arms control, the balance of power in Europe,
-                and the war in Afghanistan. The nuclear arms control topic
-                turned out to be the single most frequently dominant topic
-                across the entire corpus, appearing in over a thousand articles.
-                A second cluster concerns Soviet domestic politics &mdash;
-                power, freedom, democracy &mdash; alongside a separate topic
-                tied to espionage scandals that dominated sharply in 1985 and
-                nearly vanished after 1987. The economic cluster produced the
-                most striking finding: coverage was comparatively thin and
-                statistical, built around figures and official programs rather
-                than lived experience. And the national movements topic climbed
-                almost continuously across the entire period, eventually
-                overtaking even the diplomatic theme by 1991.
-            </p>
-
-            <p className={styles.bodyParagraphLast}>
-                The most valuable findings concern less the topics themselves
-                than their absence or unevenness. The NYT covered the Soviet
-                economy mainly when it became a matter of diplomacy, not of
-                people&rsquo;s lived experience. Attention to national movements
-                was unevenly distributed: the Baltic story gained weight faster
-                and more consistently than the Caucasian or Central Asian
-                stories. And cultural liberalization was largely described
-                through the official Soviet term &ldquo;glasnost&rdquo; rather
-                than through independent framing &mdash; itself a sign of how
-                much the paper&rsquo;s editorial lens depended on the official
-                agenda. These observations support a hypothesis familiar to
-                media scholars: major Western outlets tend to cover other
-                societies primarily through the actions of elites rather than
-                the experience of ordinary people, and to reproduce the
-                vocabulary of official sources even when writing about processes
-                that extend well beyond that vocabulary.
+                The thematic modeling was implemented with{" "}
+                <strong>MALLET</strong> &mdash; a Java-based toolkit widely used
+                in digital humanities for its efficient Gibbs sampling. The
+                corpus was first preprocessed through stopword removal,
+                lemmatization, and frequency filtering, after which a series of
+                experiments with different topic counts led to settling on a
+                14-topic model. For each article, the algorithm produced a
+                probability distribution across all topics; a topic was
+                considered &ldquo;dominant&rdquo; when it accounted for more
+                than half of that article&rsquo;s thematic weight. LDA&rsquo;s
+                limits are worth naming: it ignores word order and syntax, and
+                the number of topics is set by the researcher rather than
+                inferred from the data. The results aren&rsƒquo;t a final
+                verdict &mdash; they&rsquo;re a map that requires further
+                interpretation and close reading, which is exactly what the rest
+                of the thesis was devoted to.
             </p>
 
             <div className={styles.grid}>
@@ -124,6 +92,38 @@ export default function About() {
                     </div>
                 ))}
             </div>
+
+            <p className={styles.bodyParagraph}>
+                The fourteen topics that emerged fall into several broad
+                clusters. The largest is diplomatic and strategic: summits, arms
+                control, Afghanistan, the balance of power in Europe. A second
+                cluster concerns Soviet domestic politics &mdash; power, reform,
+                and the language of freedom and democracy &mdash; alongside a
+                sharply bounded topic tied to espionage scandals that spiked in
+                1985 and nearly disappeared after 1987. A cultural-intellectual
+                cluster captures the coverage of arts, religion, and the slow
+                opening of Soviet society. And running beneath all of them,
+                growing in weight year after year, is the topic of national
+                movements &mdash; the republics, the protests, the declarations
+                of sovereignty.
+            </p>
+
+            <p className={styles.bodyParagraphLast}>
+                What the model reveals is less about what the NYT covered than
+                about the shape of that coverage over time. The diplomatic frame
+                dominated throughout, but its grip loosened as the period
+                advanced. The national movements topic climbed almost without
+                interruption, overtaking even arms control by 1991 &mdash; a
+                shift visible in the data before it became obvious in hindsight.
+                The economy, by contrast, was strikingly underrepresented: the
+                NYT wrote about Soviet economic life mainly when it became a
+                matter of diplomacy or official policy, rarely as something
+                people experienced directly. These asymmetries are not just
+                curiosities &mdash; they are evidence of how a major Western
+                newspaper constructed its understanding of a collapsing empire,
+                and of which stories it chose to tell, and which it left in the
+                margins.
+            </p>
 
             <Link to="/topics" className={styles.cta}>
                 Open the Explorer{" "}
