@@ -13,14 +13,25 @@
 
 .brand {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: 10px;
     cursor: pointer;
 }
 
+.brandIcon {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    color: var(--color-text);
+}
+
+.brandText {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
 .brandTitle {
-    font-family: var(--font-lora), Georgia, serif;
-    font-style: italic;
     font-size: 19px;
     letter-spacing: 0.3px;
     color: var(--color-text);

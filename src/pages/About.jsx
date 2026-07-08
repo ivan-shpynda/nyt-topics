@@ -16,7 +16,7 @@ const GRID_ITEMS = [
     },
     {
         label: "The Explorer",
-        text: "The Topics page exposes four controls. Granularity switches between monthly and yearly resolution. View toggles between Article Count — the number of articles in which the topic's weight exceeds the selected threshold — and Topic Proportion, which charts the topic's average thematic weight across all articles in a given period. Threshold, available in Article Count mode, sets the minimum LDA weight a topic must hold in an article for that article to be counted.",
+        text: "The Topics page exposes few controls. Granularity switches between monthly and yearly resolution. View toggles between Article Count — the number of articles in which the topic's weight exceeds the selected threshold — and Topic Proportion, which charts the topic's average thematic weight across all articles in a given period.",
     },
 ];
 
