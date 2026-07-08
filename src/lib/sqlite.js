@@ -106,57 +106,58 @@ export async function getArticleExamples({
     topicThreshold,
     skip = 0,
     limit = 10,
+    sortField = "date",
+    sortDirection = "desc",
+    dateFrom,
+    dateTo,
 }) {
     const db = await loadDb();
     const filter = resolveFilter(topicIndex, topicThreshold);
     const safeSkip = Math.max(0, skip);
     const safeLimit = Math.min(100, Math.max(1, limit));
+    const dir = sortDirection === "asc" ? "ASC" : "DESC";
 
-    let total;
-    let articles;
+    const conditions = [];
+    const params = [];
 
     if (filter) {
-        const col = `topic_${filter.index}`;
-        const whereClause = `WHERE ${col} > ?`;
-
-        total = runQuery(
-            db,
-            `SELECT COUNT(*) as count FROM articles ${whereClause}`,
-            [filter.threshold],
-        )[0].count;
-
-        articles = runQuery(
-            db,
-            `SELECT id, headline, web_url, pub_date, ${col} as topic_val
-             FROM articles
-             ${whereClause}
-             ORDER BY ${col} DESC
-             LIMIT ? OFFSET ?`,
-            [filter.threshold, safeLimit, safeSkip],
-        ).map((r) => ({
-            headline: r.headline,
-            web_url: r.web_url,
-            pub_date: r.pub_date,
-            topicPercentage: (r.topic_val * 100).toFixed(2),
-        }));
-    } else {
-        total = runQuery(db, "SELECT COUNT(*) as count FROM articles")[0]
-            .count;
-
-        articles = runQuery(
-            db,
-            `SELECT id, headline, web_url, pub_date
-             FROM articles
-             ORDER BY pub_date DESC
-             LIMIT ? OFFSET ?`,
-            [safeLimit, safeSkip],
-        ).map((r) => ({
-            headline: r.headline,
-            web_url: r.web_url,
-            pub_date: r.pub_date,
-            topicPercentage: null,
-        }));
+        conditions.push(`topic_${filter.index} > ?`);
+        params.push(filter.threshold);
     }
+    if (dateFrom && dateTo) {
+        conditions.push(`strftime('%Y-%m', pub_date) BETWEEN ? AND ?`);
+        params.push(dateFrom, dateTo);
+    }
+
+    const whereClause = conditions.length
+        ? `WHERE ${conditions.join(" AND ")}`
+        : "";
+    const orderBy =
+        sortField === "weight" && filter
+            ? `topic_${filter.index} ${dir}`
+            : `pub_date ${dir}`;
+    const topicCol = filter ? `, topic_${filter.index} as topic_val` : "";
+
+    const total = runQuery(
+        db,
+        `SELECT COUNT(*) as count FROM articles ${whereClause}`,
+        params,
+    )[0].count;
+
+    const articles = runQuery(
+        db,
+        `SELECT id, headline, web_url, pub_date${topicCol}
+         FROM articles
+         ${whereClause}
+         ORDER BY ${orderBy}
+         LIMIT ? OFFSET ?`,
+        [...params, safeLimit, safeSkip],
+    ).map((r) => ({
+        headline: r.headline,
+        web_url: r.web_url,
+        pub_date: r.pub_date,
+        topicPercentage: filter ? (r.topic_val * 100).toFixed(2) : null,
+    }));
 
     return {
         articles,

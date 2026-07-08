@@ -53,3 +53,10 @@ export const DATE_RANGE = {
     END_YEAR: 1991,
     END_MONTH: 11, // December (0-indexed)
 };
+
+// "YYYY-MM" bounds matching <input type="month"> format, for the Article
+// Examples date-range filter.
+export const MONTH_RANGE = {
+    from: `${DATE_RANGE.START_YEAR}-${String(DATE_RANGE.START_MONTH + 1).padStart(2, "0")}`,
+    to: `${DATE_RANGE.END_YEAR}-${String(DATE_RANGE.END_MONTH + 1).padStart(2, "0")}`,
+};

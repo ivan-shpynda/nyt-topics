@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from "react";
+import { MONTH_RANGE } from "@/helpers/constants.js";
 
 const FilterContext = createContext();
 
@@ -8,15 +9,27 @@ export function FilterProvider({ children }) {
     const [chartMode, setChartMode] = useState("count");
     const [granularity, setGranularity] = useState("month");
 
+    // null = "auto": resolves to "weight" when a topic is selected, else
+    // "date". Becomes sticky once the user explicitly picks a sort field.
+    const [exampleSortField, setExampleSortField] = useState(null);
+    const [exampleSortDirection, setExampleSortDirection] = useState("desc");
+    const [exampleDateFrom, setExampleDateFrom] = useState(MONTH_RANGE.from);
+    const [exampleDateTo, setExampleDateTo] = useState(MONTH_RANGE.to);
+
     const handleTopicChange = (index) => {
         setTopicIndex(index);
         if (index === "") {
             setTopicThreshold("");
             setChartMode("count");
+            // "weight" sort is meaningless without a topic selected.
+            setExampleSortField(null);
         } else if (topicIndex === "") {
             setTopicThreshold("50");
         }
     };
+
+    const effectiveSortField =
+        exampleSortField ?? (topicIndex !== "" ? "weight" : "date");
 
     return (
         <FilterContext.Provider
@@ -29,6 +42,14 @@ export function FilterProvider({ children }) {
                 setChartMode,
                 granularity,
                 setGranularity,
+                effectiveSortField,
+                setExampleSortField,
+                exampleSortDirection,
+                setExampleSortDirection,
+                exampleDateFrom,
+                setExampleDateFrom,
+                exampleDateTo,
+                setExampleDateTo,
             }}
         >
             {children}

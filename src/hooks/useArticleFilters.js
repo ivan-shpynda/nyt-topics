@@ -13,14 +13,30 @@ export function useArticleFilters() {
     const [loadingMore, setLoadingMore] = useState(false);
     const [hasMore, setHasMore] = useState(false);
     const [skip, setSkip] = useState(0);
-    const { topicIndex, topicThreshold, chartMode } = useFilters();
+    const {
+        topicIndex,
+        topicThreshold,
+        chartMode,
+        effectiveSortField,
+        exampleSortDirection,
+        exampleDateFrom,
+        exampleDateTo,
+    } = useFilters();
 
     useEffect(() => {
         setSkip(0);
         setSampleArticles([]);
         fetchArticles();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [topicIndex, topicThreshold, chartMode]);
+    }, [
+        topicIndex,
+        topicThreshold,
+        chartMode,
+        effectiveSortField,
+        exampleSortDirection,
+        exampleDateFrom,
+        exampleDateTo,
+    ]);
 
     const fetchArticles = async () => {
         const isProportionMode = chartMode === "proportion" && topicIndex !== "";
@@ -68,6 +84,10 @@ export function useArticleFilters() {
                 topicThreshold: threshold,
                 skip: skipValue,
                 limit: 10,
+                sortField: effectiveSortField,
+                sortDirection: exampleSortDirection,
+                dateFrom: exampleDateFrom,
+                dateTo: exampleDateTo,
             });
 
             if (append) {

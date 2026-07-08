@@ -7,6 +7,77 @@
     margin-bottom: 16px;
 }
 
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 28px;
+    margin-bottom: 24px;
+}
+
+.controlGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 132px;
+}
+
+.label {
+    font-family: var(--font-ibm-plex-mono), monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+}
+
+.toggle {
+    display: flex;
+    border: 1px solid var(--color-border-mid);
+    width: fit-content;
+}
+
+.toggleBtn {
+    cursor: pointer;
+    padding: 12px 16px;
+    border: none;
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-family: var(--font-ibm-plex-sans), sans-serif;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.toggleBtn:not(:last-child) {
+    border-right: 1px solid var(--color-border-mid);
+}
+
+.toggleBtnActive {
+    background: var(--color-accent);
+    color: var(--color-surface);
+}
+
+.directionBtn {
+    cursor: pointer;
+    padding: 12px 16px;
+    border: 1px solid var(--color-border-mid);
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-family: var(--font-ibm-plex-sans), sans-serif;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.dateInput {
+    background: var(--color-bg);
+    color: var(--color-text);
+    border: 1px solid var(--color-border-mid);
+    padding: 11px 14px;
+    font-family: var(--font-ibm-plex-sans), sans-serif;
+    font-size: 14px;
+    outline: none;
+    cursor: pointer;
+}
+
 .list {
     display: flex;
     flex-direction: column;

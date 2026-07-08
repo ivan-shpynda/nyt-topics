@@ -1,3 +1,5 @@
+import { useFilters } from "@/context/FilterContext";
+import { MONTH_RANGE } from "@/helpers/constants.js";
 import styles from "./ArticleList.module.css";
 
 function formatDate(dateString) {
@@ -9,6 +11,11 @@ function formatDate(dateString) {
     });
 }
 
+const DIRECTION_LABELS = {
+    weight: { desc: "↓ Highest first", asc: "↑ Lowest first" },
+    date: { desc: "↓ Newest first", asc: "↑ Oldest first" },
+};
+
 export default function ArticleList({
     articles,
     loading,
@@ -16,12 +23,99 @@ export default function ArticleList({
     hasMore,
     loadingMore,
 }) {
+    const {
+        topicIndex,
+        effectiveSortField,
+        setExampleSortField,
+        exampleSortDirection,
+        setExampleSortDirection,
+        exampleDateFrom,
+        setExampleDateFrom,
+        exampleDateTo,
+        setExampleDateTo,
+    } = useFilters();
+
+    const toggleDirection = () => {
+        setExampleSortDirection(exampleSortDirection === "desc" ? "asc" : "desc");
+    };
+
+    const handleDateFromChange = (e) => {
+        const value = e.target.value;
+        setExampleDateFrom(value);
+        if (value > exampleDateTo) setExampleDateTo(value);
+    };
+
+    const handleDateToChange = (e) => {
+        const value = e.target.value;
+        setExampleDateTo(value);
+        if (value < exampleDateFrom) setExampleDateFrom(value);
+    };
+
     if (loading) return null;
 
     return (
         <div>
             <div className={styles.eyebrow}>
                 Article Examples ({articles?.length || 0})
+            </div>
+
+            <div className={styles.controls}>
+                {topicIndex !== "" && (
+                    <div className={styles.controlGroup}>
+                        <label className={styles.label}>Sort by</label>
+                        <div className={styles.toggle}>
+                            <button
+                                type="button"
+                                className={`${styles.toggleBtn} ${effectiveSortField === "weight" ? styles.toggleBtnActive : ""}`}
+                                onClick={() => setExampleSortField("weight")}
+                            >
+                                Topic Weight
+                            </button>
+                            <button
+                                type="button"
+                                className={`${styles.toggleBtn} ${effectiveSortField === "date" ? styles.toggleBtnActive : ""}`}
+                                onClick={() => setExampleSortField("date")}
+                            >
+                                Date
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                <div className={styles.controlGroup}>
+                    <label className={styles.label}>Direction</label>
+                    <button
+                        type="button"
+                        className={styles.directionBtn}
+                        onClick={toggleDirection}
+                    >
+                        {DIRECTION_LABELS[effectiveSortField][exampleSortDirection]}
+                    </button>
+                </div>
+
+                <div className={styles.controlGroup}>
+                    <label className={styles.label}>From</label>
+                    <input
+                        type="month"
+                        className={styles.dateInput}
+                        min={MONTH_RANGE.from}
+                        max={MONTH_RANGE.to}
+                        value={exampleDateFrom}
+                        onChange={handleDateFromChange}
+                    />
+                </div>
+
+                <div className={styles.controlGroup}>
+                    <label className={styles.label}>To</label>
+                    <input
+                        type="month"
+                        className={styles.dateInput}
+                        min={MONTH_RANGE.from}
+                        max={MONTH_RANGE.to}
+                        value={exampleDateTo}
+                        onChange={handleDateToChange}
+                    />
+                </div>
             </div>
 
             <div className={styles.list}>
@@ -52,7 +146,8 @@ export default function ArticleList({
                     ))
                 ) : (
                     <div className={styles.empty}>
-                        No articles meet this threshold. Try lowering it.
+                        No articles match these filters. Try widening the
+                        threshold or date range.
                     </div>
                 )}
             </div>

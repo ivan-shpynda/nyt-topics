@@ -11,12 +11,12 @@ const GRID_ITEMS = [
         text: "Latent Dirichlet Allocation (LDA), implemented with MALLET, was applied to the full corpus after standard preprocessing — stopword removal, lemmatization, and frequency filtering. After a series of experiments, a 14-topic model was selected. For each article, the algorithm produced a probability distribution across all topics; a topic was considered dominant when it accounted for more than half of that article's thematic weight.",
     },
     {
-        label: "Database",
-        text: "MALLET produces topic distributions as raw output files. To make the results navigable, a SQLite database was assembled from two sources: the article metadata retrieved via the NYT Article Search API — headline, date, section, keywords, abstract, and URL — and the per-article topic weights output by the LDA model. This application queries that database directly, allowing the full corpus to be filtered, sorted, and charted by topic, time, and section.",
+        label: "Database & Visualization",
+        text: "MALLET's raw output was loaded into a SQLite database alongside article metadata from the NYT API — headline, date, section, keywords, abstract, and URL. This application queries that database directly and renders the results as line charts via Chart.js, plotting monthly or yearly article counts per topic across the seven-year span of the corpus.",
     },
     {
-        label: "Visualization",
-        text: "The application is built as a single-page application using React and Vite. Topic trends over time are rendered as line charts via Chart.js, chosen for its flexibility in displaying multi-series temporal data across the seven-year span of the corpus. Each chart plots monthly or yearly article counts per topic, making long-term shifts and sudden spikes — like the surge in national movements coverage during 1991 — immediately legible.",
+        label: "The Explorer",
+        text: "The Topics page exposes four controls. Granularity switches between monthly and yearly resolution. View toggles between Article Count — the number of articles in which the topic's weight exceeds the selected threshold — and Topic Proportion, which charts the topic's average thematic weight across all articles in a given period. Threshold, available in Article Count mode, sets the minimum LDA weight a topic must hold in an article for that article to be counted.",
     },
 ];
 
